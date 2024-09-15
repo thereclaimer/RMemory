@@ -66,17 +66,54 @@ struct RMemoryBlockAllocator {
 };
 
 /**********************************************************************************/
+/* STACK ALLOCATORS                                                                */
+/**********************************************************************************/
+
+struct RMemoryStackAllocator {
+    RMemoryStackAllocator* next;
+    r_index                reservation_index;
+    r_index                region_index;
+    r_index                stack_allocator_index;
+    r_memory               stack_start;
+    r_size                 stack_size;
+    r_address              stack_position;
+    r_index                current_arena_index;
+};
+
+/**********************************************************************************/
+/* DOUBLE STACK ALLOCATOR                                                         */
+/**********************************************************************************/
+
+struct RMemoryDoubleStackAllocatorSubStack {
+    r_memory  start;
+    r_size    size;
+    r_address position;
+    r_index   current_arena_index;
+    r_b32     top_down;
+};
+
+struct RMemoryDoubleStackAllocator {
+    RMemoryDoubleStackAllocator*        next;
+    r_index                             reservation_index;
+    r_index                             region_index;
+    r_index                             double_stack_allocator_index;
+    RMemoryDoubleStackAllocatorSubStack stack_a;
+    RMemoryDoubleStackAllocatorSubStack stack_b;
+};
+
+/**********************************************************************************/
 /* RESERVATION                                                                    */
 /**********************************************************************************/
 
 struct RMemoryReservation {
-    RMemoryReservation*   next;
-    RMemoryRegion*        region_list;
-    RMemoryBlockAllocator block_allocator_list;
-    r_memory              start;
-    r_size                size;
-    r_address             position;
-    r_index               index;
+    RMemoryReservation*    next;
+    RMemoryRegion*         region_list;
+    RMemoryBlockAllocator* block_allocator_list;
+    RMemoryStackAllocator* stack_allocator_list;
+    r_memory               start;
+    r_size                 size;
+    r_address              position;
+    r_index                index;
 };
 
 /**********************************************************************************/

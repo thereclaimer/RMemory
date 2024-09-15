@@ -67,9 +67,8 @@ namespace r_mem {
     r_external const RHNDMemoryReservation reservation_at_index (const r_index reservation_index);
 };
 
-
 /**********************************************************************************/
-/* REGION                                                                   */
+/* REGION                                                                         */
 /**********************************************************************************/
 
 namespace r_mem {
@@ -116,11 +115,25 @@ namespace r_mem {
 
 namespace r_mem {
 
-    const RHNDMemoryArena arena_commit_next   (RHNDMemoryArenaRegion arena_region_handle);
-    const RHNDMemoryArena arena_commit_index   (RHNDMemoryArenaRegion arena_region_handle, const r_index arena_index);
+    const RHNDMemoryArena arena_commit (const RHNDMemoryArenaRegion arena_region_handle);
 
-    const r_b8            arena_decommit      (const RHNDMemoryArena arena_handle);
+    const RHNDMemoryArena arena_commit_next  (const RHNDMemoryArena arena_handle);
+    const RHNDMemoryArena arena_commit_index (const RHNDMemoryArena arena_handle, const r_index arena_index);
+    const r_b8            arena_decommit     (const RHNDMemoryArena arena_handle);
+    
+    const r_size arena_size_total (const RHNDMemoryArena arena_handle);
+    const r_size arena_size_used  (const RHNDMemoryArena arena_handle);
+    const r_size arena_size_free  (const RHNDMemoryArena arena_handle);
+    
+    const r_memory arena_push         (const RHNDMemoryArena arena_handle, const r_size size);
+    const r_memory arena_pull         (const RHNDMemoryArena arena_handle, const r_size size);
+    const r_memory arena_push_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
+    const r_memory arena_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
 
+    const r_b8 arena_can_push         (const RHNDMemoryArena arena_handle, const r_size size);
+    const r_b8 arena_can_pull         (const RHNDMemoryArena arena_handle, const r_size size);
+    const r_b8 arena_can_push_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
+    const r_b8 arena_can_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
 };
 
 /**********************************************************************************/
@@ -151,10 +164,13 @@ namespace r_mem {
     r_external const r_size   block_allocator_arena_count_total       (const RHNDMemoryBlockAllocator block_allocator_handle);
     r_external const r_size   block_allocator_arena_count_committed   (const RHNDMemoryBlockAllocator block_allocator_handle);
     r_external const r_size   block_allocator_arena_count_uncommitted (const RHNDMemoryBlockAllocator block_allocator_handle);
+    r_external       r_memory block_allocator_block_at_index          (const RHNDMemoryBlockAllocator block_allocator_handle, const r_index block_index);
+    r_external       r_memory block_allocator_commit_at_index         (const RHNDMemoryBlockAllocator block_allocator_handle, const r_index block_index);
+    r_external const r_b8     block_allocator_decommit_at_index       (const RHNDMemoryBlockAllocator block_allocator_handle, const r_index block_index);
 }
 
 /**********************************************************************************/
-/* BLOCK ALLOCATOR                                                                */
+/* STACK ALLOCATOR                                                                */
 /**********************************************************************************/
 
 namespace r_mem {
@@ -165,20 +181,59 @@ namespace r_mem {
         const r_size stack_allocator_size,
         const r_size minimum_arena_size);
 
+    r_external r_memory stack_allocator_memory (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external r_memory stack_allocator_push   (const RHNDMemoryStackAllocator stack_allocator_handle, const r_size push_size);
+    r_external r_memory stack_allocator_pull   (const RHNDMemoryStackAllocator stack_allocator_handle, const r_size pull_size);
+    
+    r_external const r_b8   stack_allocator_set_save_point          (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_b8   stack_allocator_reset                   (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_b8   stack_allocator_reset_to_save_point     (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_size_total              (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_size_commited           (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_size_uncommited         (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_arena_size              (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_arena_count_total       (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_arena_count_committed   (const RHNDMemoryStackAllocator stack_allocator_handle);
+    r_external const r_size stack_allocator_arena_count_uncommitted (const RHNDMemoryStackAllocator stack_allocator_handle);
+};
 
-    r_external r_memory stack_allocator_memory (const RHNDMemoryStackAllocator stack_allocator);
-    r_external r_memory stack_allocator_push   (const RHNDMemoryStackAllocator stack_allocator, const r_size push_size);
-    r_external r_memory stack_allocator_pull   (const RHNDMemoryStackAllocator stack_allocator, const r_size pull_size);
+/**********************************************************************************/
+/* DOUBLE STACK ALLOCATOR                                                         */
+/**********************************************************************************/
+
+namespace r_mem {
+
+    r_external const RHNDMemoryDoubleStackAllocator
+    double_stack_allocator_create(
+        const r_cstr stack_allocator_tag,
+        const r_size stack_allocator_size,
+        const r_size minimum_arena_size);
+
+    r_external r_memory double_stack_allocator_a_memory (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external r_memory double_stack_allocator_a_push   (const RHNDMemoryDoubleStackAllocator double_, const r_size push_size);
+    r_external r_memory double_stack_allocator_a_pull   (const RHNDMemoryDoubleStackAllocator double_, const r_size pull_size);
+
+    r_external r_memory double_stack_allocator_a_memory (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external r_memory double_stack_allocator_a_push   (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle, const r_size push_size);
+    r_external r_memory double_stack_allocator_a_pull   (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle, const r_size pull_size);
     
-    r_external const r_b8 stack_allocator_set_save_point      (const RHNDMemoryStackAllocator stack_allocator);
-    r_external const r_b8 stack_allocator_reset               (const RHNDMemoryStackAllocator stack_allocator);
-    r_external const r_b8 stack_allocator_reset_to_save_point (const RHNDMemoryStackAllocator stack_allocator);
-    
-    r_external const r_size   stack_allocator_size_total              (const RHNDMemoryBlockAllocator block_allocator_handle);
-    r_external const r_size   stack_allocator_size_commited           (const RHNDMemoryBlockAllocator block_allocator_handle);
-    r_external const r_size   stack_allocator_size_uncommited         (const RHNDMemoryBlockAllocator block_allocator_handle);
-    r_external const r_size   stack_allocator_arena_size              (const RHNDMemoryBlockAllocator block_allocator_handle);
-    r_external const r_size   stack_allocator_arena_count_total       (const RHNDMemoryBlockAllocator block_allocator_handle);
-    r_external const r_size   stack_allocator_arena_count_committed   (const RHNDMemoryBlockAllocator block_allocator_handle);
-    r_external const r_size   stack_allocator_arena_count_uncommitted (const RHNDMemoryBlockAllocator block_allocator_handle);
+    r_external const r_b8     double_stack_allocator_a_set_save_point        (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_b8     double_stack_allocator_a_reset                 (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_b8     double_stack_allocator_a_reset_to_save_point   (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_a_arena_count_committed (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_a_size_used             (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+
+    r_external const r_b8     double_stack_allocator_b_set_save_point        (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_b8     double_stack_allocator_b_reset                 (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_b8     double_stack_allocator_b_reset_to_save_point   (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_b_arena_count_committed (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_b_size_used             (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+
+    r_external const r_size   double_stack_allocator_size_total              (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_arena_size              (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_arena_count_total       (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_arena_count_uncommitted (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_arena_count_committed   (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_size_commited           (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
+    r_external const r_size   double_stack_allocator_size_uncommited         (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
 };
