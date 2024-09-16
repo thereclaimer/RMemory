@@ -89,3 +89,26 @@ r_mem_internal::stack_push_arenas(
 
     return(arena_ptr);
 }
+
+r_internal RMemoryBlockAllocator* 
+r_mem_internal::stack_push_block_allocator(
+    r_void) {
+
+    const r_size aligned_size = r_align_size_struct(RMemoryBlockAllocator);
+
+    RMemoryBlockAllocator* block_allocator_ptr = 
+        (RMemoryBlockAllocator*)r_mem_internal::stack_push(aligned_size);    
+
+    return(block_allocator_ptr);
+}
+
+r_internal RMemoryBlock*          
+r_mem_internal::stack_push_blocks(
+    const r_size block_count) {
+
+    const r_size push_size = sizeof(RMemoryBlock) * block_count;
+
+    RMemoryBlock* block_ptr = (RMemoryBlock*)r_mem_internal::stack_push(push_size);    
+
+    return(block_ptr);
+}

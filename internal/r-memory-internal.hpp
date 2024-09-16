@@ -112,12 +112,14 @@ struct RMemoryStack {
 
 namespace r_mem_internal {
 
-    r_internal const r_b8          stack_create   (const r_size stack_size);
-    r_internal const r_b8          stack_can_push (const r_size size);
-    r_internal r_memory            stack_push     (const r_size size);
-    r_internal RMemoryReservation* stack_push_reservation(r_void);  
-    r_internal RMemoryRegion*      stack_push_region(r_void);
-    r_internal RMemoryArena*       stack_push_arenas(const r_size arena_count);
+    r_internal const r_b8             stack_create   (const r_size stack_size);
+    r_internal const r_b8             stack_can_push (const r_size size);
+    r_internal r_memory               stack_push     (const r_size size);
+    r_internal RMemoryReservation*    stack_push_reservation(r_void);  
+    r_internal RMemoryRegion*         stack_push_region(r_void);
+    r_internal RMemoryArena*          stack_push_arenas(const r_size arena_count);
+    r_internal RMemoryBlockAllocator* stack_push_block_allocator(r_void);
+    r_internal RMemoryBlock*          stack_push_blocks(const r_size block_count);
 };
 
 /**********************************************************************************/
@@ -125,9 +127,9 @@ namespace r_mem_internal {
 /**********************************************************************************/
 
 struct RMemoryBlock {
+    r_memory start;
     r_index  index;
     r_index  arena_index;
-    r_memory start;
 };
 
 struct RMemoryBlockAllocator {
@@ -135,7 +137,8 @@ struct RMemoryBlockAllocator {
     r_index                reservation_index;
     r_index                region_index;
     r_index                block_allocator_index;
-    r_size                 block_count;
+    r_size                 block_count_total;
+    r_size                 block_count_per_arena;
     r_size                 block_size;
     RMemoryBlock*          blocks;
 };
@@ -144,6 +147,14 @@ struct RMemoryBlockAllocatorList {
     RMemoryBlockAllocator* first;
     RMemoryBlockAllocator* last;
     r_size                 count;
+};
+
+namespace r_mem {
+
+    inline RMemoryBlockAllocator* 
+    block_allocator_from_handle(const RHNDMemoryBlockAllocator block_allocator_handle) {
+        return((RMemoryBlockAllocator*)block_allocator_handle);
+    }
 };
 
 /**********************************************************************************/
