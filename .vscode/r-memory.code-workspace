@@ -7,10 +7,6 @@
 		{
 			"path": "../modules/r-common",
 			"name": "RCommon"
-		},
-		{
-			"path": "../modules/r-win32",
-			"name": "RWin32"
 		}
 	],
 	"settings": {}
