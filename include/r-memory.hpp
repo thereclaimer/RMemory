@@ -35,14 +35,16 @@ namespace r_mem {
         const r_size              arena_alignment,
         const r_size              internal_stack_size);
 
-    r_external const r_b8   memory_manager_destroy                   (r_void);
-    r_external const r_size memory_manager_maximum_reserved_size     (r_void);
-    r_external const r_size memory_manager_reservation_alignment  (r_void);
-    r_external const r_size memory_manager_arena_alignment        (r_void);
-    r_external const r_size memory_manager_current_reserved_size     (r_void);
-    r_external const r_size memory_manager_internal_stack_size_total (r_void);
-    r_external const r_size memory_manager_internal_stack_size_used  (r_void);
-    r_external const r_size memory_manager_internal_stack_size_free  (r_void);
+    r_external const r_b8   memory_manager_destroy                  (r_void);
+    r_external const r_size memory_manager_maximum_reserved_size    (r_void);
+    r_external const r_size memory_manager_reservation_alignment    (r_void);
+    r_external const r_size memory_manager_arena_alignment          (r_void);
+    r_external const r_size memory_manager_current_reserved_size    (r_void);
+    r_external const r_size memory_manager_internal_stack_size_total(r_void);
+    r_external const r_size memory_manager_internal_stack_size_used (r_void);
+    r_external const r_size memory_manager_internal_stack_size_free (r_void);
+    r_external const r_size memory_manager_align_to_reservation     (const r_size size);
+    r_external const r_size memory_manager_align_to_arena           (const r_size size);
 };
 
 /**********************************************************************************/
@@ -62,9 +64,11 @@ namespace r_mem {
     r_external const r_size reservation_arena_pool_count   (const RHNDMemoryReservation reservation_handle);
     r_external const r_size reservation_arena_region_count (const RHNDMemoryReservation reservation_handle);
 
-    r_external const RHNDMemoryReservation reservation_list     (r_void);
-    r_external const RHNDMemoryReservation reservation_next     (const RHNDMemoryReservation reservation_handle);
-    r_external const RHNDMemoryReservation reservation_at_index (const r_index reservation_index);
+    
+    r_external const r_size                reservation_list_count (r_void);
+    r_external const RHNDMemoryReservation reservation_list       (r_void);
+    r_external const RHNDMemoryReservation reservation_next       (const RHNDMemoryReservation reservation_handle);
+    r_external const RHNDMemoryReservation reservation_at_index   (const r_index reservation_index);
 };
 
 /**********************************************************************************/
@@ -100,13 +104,13 @@ namespace r_mem {
     r_external const RHNDMemoryRegion region_at_index (const RHNDMemoryReservation reservation_handle, const r_index);
     r_external const RHNDMemoryRegion region_next     (const RHNDMemoryRegion region_handle);
 
-    r_external const r_size region_size_total              (r_void);
-    r_external const r_size region_size_committed          (r_void);
-    r_external const r_size region_size_decommitted        (r_void);
-    r_external const r_size region_arena_size              (r_void);
-    r_external const r_size region_arena_count_total       (r_void);
-    r_external const r_size region_arena_count_committed   (r_void);
-    r_external const r_size region_arena_count_decommitted (r_void);
+    r_external const r_size region_size_total              (const RHNDMemoryRegion region_handle);
+    r_external const r_size region_size_committed          (const RHNDMemoryRegion region_handle);
+    r_external const r_size region_size_decommitted        (const RHNDMemoryRegion region_handle);
+    r_external const r_size region_arena_size              (const RHNDMemoryRegion region_handle);
+    r_external const r_size region_arena_count_total       (const RHNDMemoryRegion region_handle);
+    r_external const r_size region_arena_count_committed   (const RHNDMemoryRegion region_handle);
+    r_external const r_size region_arena_count_decommitted (const RHNDMemoryRegion region_handle);
 };
 
 /**********************************************************************************/
@@ -115,12 +119,15 @@ namespace r_mem {
 
 namespace r_mem {
 
-    r_external const RHNDMemoryArena arena_commit (const RHNDMemoryRegion arena_region_handle);
+    r_external const RHNDMemoryArena arena_at_index     (const RHNDMemoryRegion region_handle, const r_index arena_index);
+    r_external const RHNDMemoryArena arena_commit       (const RHNDMemoryRegion arena_region_handle);
+    r_external const RHNDMemoryArena arena_commit_next  (const RHNDMemoryArena  arena_handle);
+    r_external const RHNDMemoryArena arena_commit_index (const RHNDMemoryArena  arena_handle, const r_index arena_index);
+    r_external const r_b8            arena_decommit     (const RHNDMemoryArena  arena_handle);
 
-    r_external const RHNDMemoryArena arena_commit_next  (const RHNDMemoryArena arena_handle);
-    r_external const RHNDMemoryArena arena_commit_index (const RHNDMemoryArena arena_handle, const r_index arena_index);
-    r_external const r_b8            arena_decommit     (const RHNDMemoryArena arena_handle);
-    
+    r_external const r_b8 arena_is_committed          (const RHNDMemoryArena  arena_handle);
+    r_external const r_b8 arena_at_index_is_committed (const RHNDMemoryRegion region_handle, const r_index arena_index);
+
     r_external const r_size arena_size_total (const RHNDMemoryArena arena_handle);
     r_external const r_size arena_size_used  (const RHNDMemoryArena arena_handle);
     r_external const r_size arena_size_free  (const RHNDMemoryArena arena_handle);

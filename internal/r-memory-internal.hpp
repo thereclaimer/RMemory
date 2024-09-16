@@ -1,6 +1,9 @@
 #ifndef R_MEMORY_INTERNAL_HPP
 #define R_MEMORY_INTERNAL_HPP
 
+#include <stdio.h>
+#include <string.h>
+
 #include "r-memory.hpp"
 
 /**********************************************************************************/
@@ -10,11 +13,6 @@
 struct RMemoryArena;
 struct RMemoryReservation;
 struct RMemoryRegion;
-struct RMemoryArena;
-
-/**********************************************************************************/
-/* ARENA                                                                          */
-/**********************************************************************************/
 
 struct RMemoryArena {
     r_index   index;
@@ -22,23 +20,85 @@ struct RMemoryArena {
     r_address position;
 };
 
+namespace r_mem_internal {
+
+    RMemoryArena* arena_from_handle (const RHNDMemoryArena arena_handle);
+};
+
 /**********************************************************************************/
 /* REGION                                                                         */
 /**********************************************************************************/
 
 struct RMemoryRegion {
-    r_index       reservation_index;
-    r_size        arena_count;
-    r_size        arena_size;
-    r_memory      arena_start;
-    RMemoryArena* arenas;
+    RMemoryRegion* next;
+    RMemoryArena*  arenas;
+    r_memory       arena_start;
+    r_size         arena_count;
+    r_size         arena_size;
+    r_size         region_size;
+    r_index        region_index;
+    r_index        reservation_index;
 };
 
 struct RMemoryRegionList{
     RMemoryRegion* first;
     RMemoryRegion* last;
     r_size         count;
+    r_size         total_size;
+    r_memory       next_arena_start;
 };
+
+namespace r_mem_internal {
+
+    inline RMemoryRegion* region_from_handle(const RHNDMemoryRegion region_handle) { return((RMemoryRegion*)region_handle); }
+    
+    r_internal r_void         region_list_add            (RMemoryReservation* reservation_ptr, RMemoryRegion* region_ptr);
+    r_internal const r_b8     region_list_can_add        (RMemoryReservation* reservation_ptr, const r_size region_size);
+    r_internal const r_size   region_struct_size_aligned (r_void);
+    r_internal RMemoryRegion* region_from_arena          (RMemoryArena* arena_ptr);
+
+    r_internal RMemoryRegion* 
+    region_initialize(
+              RMemoryReservation* reservation_ptr,
+        const r_size              region_size_aligned,
+        const r_size              arena_size_aligned,
+        const r_size              arena_count);
+};
+
+
+/**********************************************************************************/
+/* ARENA                                                                          */
+/**********************************************************************************/
+
+namespace r_mem_internal {
+
+    inline RMemoryArena* arena_from_handle (const RHNDMemoryArena arena_handle) { return((RMemoryArena*)arena_handle); }
+
+    r_internal const r_b8
+    arena_commit_immediate(
+        RMemoryRegion* region_ptr,
+        RMemoryArena*  arena_ptr);
+
+    r_internal RMemoryArena*
+    arena_commit_immediate_index(
+              RMemoryRegion* region_ptr,
+        const r_index        arena_index);
+
+    r_internal const r_b8
+    arena_next_uncommitted(
+              RMemoryRegion* in_region_ptr,
+        const r_index        in_starting_arena_index,
+              r_index*       out_uncommitted_arena_index);
+
+    r_internal const r_b8
+    arena_decommit_immediate(
+        RMemoryRegion* region_ptr,
+        RMemoryArena*  arena_ptr);
+
+    r_internal const r_size arena_count_committed   (RMemoryRegion* region_ptr);
+    r_internal const r_size arena_count_uncommitted (RMemoryRegion* region_ptr);
+};
+
 
 /**********************************************************************************/
 /* STACK                                                                          */
@@ -162,9 +222,9 @@ namespace r_mem_internal {
 
     inline RMemoryReservation* reservation_from_handle(const RHNDMemoryReservation reservation_handle) { return((RMemoryReservation*)reservation_handle); }    
 
-    r_internal r_void reservation_list_add         (RMemoryReservation* reservation_ptr);
-    r_internal r_b8   reservation_list_release_all (r_void);
-    r_internal r_b8   reservation_list_can_add     (const r_size reservation_size);
+    r_internal r_void       reservation_list_add         (RMemoryReservation* reservation_ptr);
+    r_internal const r_b8   reservation_list_release_all (r_void);
+    r_internal const r_b8   reservation_list_can_add     (const r_size reservation_size);
 };
 
 /**********************************************************************************/

@@ -99,3 +99,27 @@ r_external const r_size
 r_mem::memory_manager_internal_stack_size_free(r_void) {
     return(0);
 }
+
+r_external const r_size 
+r_mem::memory_manager_align_to_reservation(
+    const r_size size) {
+    
+    const r_size size_aligned = 
+     r_align_a_to_b(
+        _r_memory_manager.reservation_alignment,
+        size);
+
+    return(size_aligned);
+}
+
+r_external const r_size 
+r_mem::memory_manager_align_to_arena(
+    const r_size size) {
+
+    const r_size size_aligned = 
+     r_align_a_to_b(
+        _r_memory_manager.arena_alignment,
+        size);
+
+    return(size_aligned);
+}

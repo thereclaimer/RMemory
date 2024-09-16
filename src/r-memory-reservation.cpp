@@ -82,10 +82,21 @@ r_mem::reservation_size_free(
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
+    r_size size_free = reservation_ptr->size;
+
+    for (
+        RMemoryRegion* current_region = reservation_ptr->region_list.first;
+        current_region != NULL;
+        current_region = current_region->next) {
+
+        size_free -= current_region->region_size;
+    }
+
+    return(size_free);
 }
 
 r_external const r_size 
-r_mem::reservation_count() {
+r_mem::reservation_list_count() {
 
     RMemoryReservationList& reservation_list = r_mem_internal::memory_manager_get_reservation_list();
 
@@ -98,12 +109,11 @@ r_mem::reservation_arena_region_count(
 
     RMemoryReservation* reservation_ptr = r_mem_internal::reservation_from_handle(reservation_handle);
 
-    if (reservation_ptr ? reservation_ptr->region_list.count : 0);
+    return (reservation_ptr ? reservation_ptr->region_list.count : 0);
 }
 
 r_external const RHNDMemoryReservation 
-r_mem::reservation_list(
-    const RHNDMemoryReservation reservation_handle) {
+r_mem::reservation_list(r_void) {
 
     RMemoryReservationList& reservation_list = r_mem_internal::memory_manager_get_reservation_list();
 
@@ -122,9 +132,9 @@ r_mem::reservation_next(
 r_external const RHNDMemoryReservation 
 r_mem::reservation_at_index(
     const r_index reservation_index) {
-
-    RMemoryReservation*     reservation_ptr  = r_mem_internal::reservation_from_handle(reservation_handle);
+    
     RMemoryReservationList& reservation_list = r_mem_internal::memory_manager_get_reservation_list();
+    RMemoryReservation*     reservation_ptr  = reservation_list.first; 
 
     //sanity check
     if (reservation_list.count == 0 ||
@@ -195,7 +205,7 @@ r_mem_internal::reservation_list_add(
     ++reservation_list.count;
 }
 
-r_internal r_b8
+r_internal const r_b8
 r_mem_internal::reservation_list_release_all(
     r_void) {
 
@@ -217,9 +227,11 @@ r_mem_internal::reservation_list_release_all(
                 reservation_ptr->start,
                 reservation_ptr->size);
     }
+
+    return(released_all_reservations);
 }
 
-r_internal r_b8
+r_internal const r_b8
 r_mem_internal::reservation_list_can_add(
     const r_size reservation_size) {
 
