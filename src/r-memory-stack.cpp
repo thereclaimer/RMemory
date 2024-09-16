@@ -35,7 +35,7 @@ r_mem_internal::stack_can_push(
     return(can_push);
 }
 
-r_internal const r_memory
+r_internal r_memory
 r_mem_internal::stack_push(
     const r_size size) {
 
@@ -57,7 +57,7 @@ r_mem_internal::stack_push(
     return(stack_memory);
 }
 
-r_internal const RMemoryReservation*
+r_internal RMemoryReservation*
 r_mem_internal::stack_push_reservation(
     r_void) {
 
@@ -68,7 +68,7 @@ r_mem_internal::stack_push_reservation(
     return(reservation_ptr);
 }
 
-r_internal const RMemoryRegion*
+r_internal RMemoryRegion*
 r_mem_internal::stack_push_region(
     r_void) {
 
@@ -79,7 +79,7 @@ r_mem_internal::stack_push_region(
     return(region_ptr);
 }
 
-r_internal const RMemoryArena*
+r_internal RMemoryArena*
 r_mem_internal::stack_push_arenas(
     const r_size arena_count) {
 

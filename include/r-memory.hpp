@@ -31,14 +31,14 @@ namespace r_mem {
     memory_manager_create(
         const RPlatformMemoryApi& platform_memory_api,
         const r_size              maximum_reserved_size,
-        const r_size              minimum_reservation_size,
-        const r_size              minimum_arena_size,
+        const r_size              reservation_alignment,
+        const r_size              arena_alignment,
         const r_size              internal_stack_size);
 
     r_external const r_b8   memory_manager_destroy                   (r_void);
     r_external const r_size memory_manager_maximum_reserved_size     (r_void);
-    r_external const r_size memory_manager_minimum_reservation_size  (r_void);
-    r_external const r_size memory_manager_minimum_arena_size        (r_void);
+    r_external const r_size memory_manager_reservation_alignment  (r_void);
+    r_external const r_size memory_manager_arena_alignment        (r_void);
     r_external const r_size memory_manager_current_reserved_size     (r_void);
     r_external const r_size memory_manager_internal_stack_size_total (r_void);
     r_external const r_size memory_manager_internal_stack_size_used  (r_void);
@@ -56,11 +56,11 @@ namespace r_mem {
         const r_cstr reservation_tag,
         const r_size minimum_reservation_size);
 
-    r_external const r_size reservation_size_total         (r_void);
-    r_external const r_size reservation_size_used          (r_void);
-    r_external const r_size reservation_size_free          (r_void);
-    r_external const r_size reservation_arena_pool_count   (r_void);
-    r_external const r_size reservation_arena_region_count (r_void);
+    r_external const r_size reservation_size_total         (const RHNDMemoryReservation reservation_handle);
+    r_external const r_size reservation_size_used          (const RHNDMemoryReservation reservation_handle);
+    r_external const r_size reservation_size_free          (const RHNDMemoryReservation reservation_handle);
+    r_external const r_size reservation_arena_pool_count   (const RHNDMemoryReservation reservation_handle);
+    r_external const r_size reservation_arena_region_count (const RHNDMemoryReservation reservation_handle);
 
     r_external const RHNDMemoryReservation reservation_list     (r_void);
     r_external const RHNDMemoryReservation reservation_next     (const RHNDMemoryReservation reservation_handle);
