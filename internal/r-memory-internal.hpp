@@ -4,6 +4,15 @@
 #include "r-memory.hpp"
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct RMemoryArena;
+struct RMemoryReservation;
+struct RMemoryRegion;
+struct RMemoryArena;
+
+/**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
 
@@ -139,8 +148,8 @@ namespace r_mem_internal {
     inline r_b8     platform_memory_decommit             (const r_memory start, const r_size size) { return(_r_memory_manager.platform_memory_api.decommit(start,size));           }
     inline r_b8     platform_memory_release              (const r_memory start, const r_size size) { return(_r_memory_manager.platform_memory_api.release(start,size));            }
 
-    inline       RMemoryStack&       memory_manager_get_stack            (r_void) { return(_r_memory_manager.stack); };
-    inline const RMemoryReservation* memory_manager_get_reservation_list (r_void) { return(_r_memory_manager.stack); };
+    inline RMemoryStack&             memory_manager_get_stack            (r_void) { return(_r_memory_manager.stack); };
+    inline const RMemoryReservation* memory_manager_get_reservation_list (r_void) { return(_r_memory_manager.reservation_list); };
 };
 
 #endif //R_MEMORY_INTERNAL_HPP

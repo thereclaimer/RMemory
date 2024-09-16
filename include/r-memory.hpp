@@ -115,25 +115,25 @@ namespace r_mem {
 
 namespace r_mem {
 
-    const RHNDMemoryArena arena_commit (const RHNDMemoryArenaRegion arena_region_handle);
+    r_external const RHNDMemoryArena arena_commit (const RHNDMemoryRegion arena_region_handle);
 
-    const RHNDMemoryArena arena_commit_next  (const RHNDMemoryArena arena_handle);
-    const RHNDMemoryArena arena_commit_index (const RHNDMemoryArena arena_handle, const r_index arena_index);
-    const r_b8            arena_decommit     (const RHNDMemoryArena arena_handle);
+    r_external const RHNDMemoryArena arena_commit_next  (const RHNDMemoryArena arena_handle);
+    r_external const RHNDMemoryArena arena_commit_index (const RHNDMemoryArena arena_handle, const r_index arena_index);
+    r_external const r_b8            arena_decommit     (const RHNDMemoryArena arena_handle);
     
-    const r_size arena_size_total (const RHNDMemoryArena arena_handle);
-    const r_size arena_size_used  (const RHNDMemoryArena arena_handle);
-    const r_size arena_size_free  (const RHNDMemoryArena arena_handle);
+    r_external const r_size arena_size_total (const RHNDMemoryArena arena_handle);
+    r_external const r_size arena_size_used  (const RHNDMemoryArena arena_handle);
+    r_external const r_size arena_size_free  (const RHNDMemoryArena arena_handle);
     
-    const r_memory arena_push         (const RHNDMemoryArena arena_handle, const r_size size);
-    const r_memory arena_pull         (const RHNDMemoryArena arena_handle, const r_size size);
-    const r_memory arena_push_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
-    const r_memory arena_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
+    r_external const r_memory arena_push         (const RHNDMemoryArena arena_handle, const r_size size);
+    r_external const r_memory arena_pull         (const RHNDMemoryArena arena_handle, const r_size size);
+    r_external const r_memory arena_push_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
+    r_external const r_memory arena_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
 
-    const r_b8 arena_can_push         (const RHNDMemoryArena arena_handle, const r_size size);
-    const r_b8 arena_can_pull         (const RHNDMemoryArena arena_handle, const r_size size);
-    const r_b8 arena_can_push_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
-    const r_b8 arena_can_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
+    r_external const r_b8 arena_can_push         (const RHNDMemoryArena arena_handle, const r_size size);
+    r_external const r_b8 arena_can_pull         (const RHNDMemoryArena arena_handle, const r_size size);
+    r_external const r_b8 arena_can_push_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
+    r_external const r_b8 arena_can_pull_aligned (const RHNDMemoryArena arena_handle, const r_size size, const r_size alignment);
 };
 
 /**********************************************************************************/
@@ -237,3 +237,5 @@ namespace r_mem {
     r_external const r_size   double_stack_allocator_size_commited           (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
     r_external const r_size   double_stack_allocator_size_uncommited         (const RHNDMemoryDoubleStackAllocator double_stack_allocator_handle);
 };
+
+#endif //R_MEMORY_HPP

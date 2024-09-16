@@ -4,11 +4,11 @@
 
 r_external const r_b8
 r_mem::memory_manager_create(
-    RPlatformMemoryApi& platform_memory_api,
-    r_size              maximum_reserved_size,
-    r_size              minimum_reservation_size,
-    r_size              minimum_arena_size,
-    r_size              internal_stack_size) {
+    const RPlatformMemoryApi& platform_memory_api,
+    const r_size              maximum_reserved_size,
+    const r_size              minimum_reservation_size,
+    const r_size              minimum_arena_size,
+    const r_size              internal_stack_size) {
 
     //make sure the platform api is valid
     const r_b8 api_valid = 
@@ -78,22 +78,21 @@ r_mem::memory_manager_minimum_arena_size(r_void) {
 
 r_external const r_size
 r_mem::memory_manager_current_reserved_size(r_void) {
-
+    return(0);
 }
 
 r_external const r_size
 r_mem::memory_manager_internal_stack_size_total(r_void) {
-
-    
-
+    return(0);
 }
 
 r_external const r_size
 r_mem::memory_manager_internal_stack_size_used(r_void) {
+    return(0);
 
 }
 
 r_external const r_size
 r_mem::memory_manager_internal_stack_size_free(r_void) {
-
+    return(0);
 }

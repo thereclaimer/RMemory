@@ -12,9 +12,9 @@ r_mem_internal::stack_create(
 
     RMemoryStack& stack = r_mem_internal::memory_manager_get_stack();
 
-    stack.size     = size;
+    stack.size     = stack_size;
     stack.position = 0;
-    stack.start    = r_mem_internal::platform_memory_reserve_and_commit(stack_size);
+    stack.start    = r_mem_internal::platform_memory_reserve_and_commit(NULL,stack_size);
 
     if (!stack.start) {
         return(false);
@@ -48,7 +48,7 @@ r_mem_internal::stack_push(
     }
 
     //get the current stack memory
-    const r_memory stack_memory = stack.start + (r_memory)stack.position;    
+    const r_memory stack_memory = stack.start + stack.position;    
 
     //update the stack position
     stack.position += size;
