@@ -152,11 +152,12 @@ namespace r_mem {
 
     r_external const RHNDMemoryBlockAllocator 
     block_allocator_create(
-        const r_cstr block_allocator_tag,
-        const r_size block_size,
-        const r_size block_alignment,
-        const r_size block_count,
-        const r_size minimum_arena_size);
+        const RHNDMemoryReservation reservation_handle,
+        const r_cstr                block_allocator_tag,
+        const r_size                block_size,
+        const r_size                block_alignment,
+        const r_size                block_count,
+        const r_size                minimum_arena_size);
 
     r_external const RHNDMemoryBlock block_allocator_commit                  (const RHNDMemoryBlockAllocator block_allocator_handle);
     r_external const RHNDMemoryBlock block_allocator_block_at_index          (const RHNDMemoryBlockAllocator block_allocator_handle, const r_index block_index);

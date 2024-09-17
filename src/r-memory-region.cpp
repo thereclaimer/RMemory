@@ -309,12 +309,12 @@ r_mem_internal::region_from_arena(RMemoryArena* arena_ptr) {
     }
 
     //get to the front of the arena array
-    arena_ptr -= arena_ptr->index;
+    RMemoryArena* first_arena_ptr = arena_ptr - arena_ptr->index;
 
     //the arena array is always at the end of a region allocation
     //so just subtract the aligned size of a region
     const r_size   region_struct_size_aligned = r_mem_internal::region_struct_size_aligned();
-    const r_memory arena_memory               = (r_memory)arena_ptr;
+    const r_memory arena_memory               = (r_memory)first_arena_ptr;
     const r_memory region_memory              = arena_memory - region_struct_size_aligned;        
 
     RMemoryRegion* region_ptr = (RMemoryRegion*)region_memory; 

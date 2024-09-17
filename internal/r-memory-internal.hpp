@@ -13,6 +13,8 @@
 struct RMemoryArena;
 struct RMemoryReservation;
 struct RMemoryRegion;
+struct RMemoryBlockAllocator;
+struct RMemoryBlock;
 
 struct RMemoryArena {
     r_index   index;
@@ -149,11 +151,25 @@ struct RMemoryBlockAllocatorList {
     r_size                 count;
 };
 
-namespace r_mem {
+namespace r_mem_internal {
 
     inline RMemoryBlockAllocator* 
     block_allocator_from_handle(const RHNDMemoryBlockAllocator block_allocator_handle) {
         return((RMemoryBlockAllocator*)block_allocator_handle);
+    }
+
+    inline RMemoryBlock*
+    block_from_handle(const RHNDMemoryBlock block_handle) { return((RMemoryBlock*)block_handle); }
+
+    r_internal RMemoryBlockAllocator*
+    block_allocator_from_block(RMemoryBlock* block_ptr);
+
+    const r_size
+    block_allocator_struct_size_aligned(
+        r_void) {
+
+        const r_size size_aligned = r_align_size_struct(RMemoryBlockAllocator);
+        return(size_aligned);
     }
 };
 
